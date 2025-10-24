@@ -71,3 +71,49 @@ def pregunta_01():
 
 
     """
+    from pathlib import Path
+    import pandas as pd
+    import re
+    
+    frases_sentimiento_test = []
+    frases_sentimiento_train = []
+
+    # Directorio principal, aqui hay que crear la carpeta "output"
+    main_directory = Path.cwd() / "files"
+
+    # Creamos las referencias a las carpetas de test y train
+    train_directory = main_directory / "input/input/train"
+    test_directory = main_directory / "input/input/test"
+    
+
+    # Iteramos sobre los archivos en las carpetas para extraer las frases y nombres de los sentimientos
+
+    for dir in train_directory.iterdir():
+        for file in dir.iterdir():
+            frases_sentimiento_train.append((file.read_text(), dir.parts[-1]))
+    
+    for dir in test_directory.iterdir():
+        for file in dir.iterdir():
+            frases_sentimiento_test.append((file.read_text(), dir.parts[-1]))
+
+    # Creamos los dataframes
+
+    test_dataframe = pd.DataFrame({
+        "phrase":[frase for frase, _ in frases_sentimiento_test],
+        "target":[sentimiento for _, sentimiento in frases_sentimiento_test]
+    })
+
+    train_dataframe = pd.DataFrame({
+        "phrase":[frase for frase, _ in frases_sentimiento_train],
+        "target":[sentimiento for _, sentimiento in frases_sentimiento_train]
+    })
+
+    # Creamos la carpeta "output" si no existe
+    output_directory = main_directory / "output"
+    output_directory.mkdir(parents=True, exist_ok=True)
+
+    # Guardamos los dataframes como CSV en la carpeta output
+    test_dataframe.to_csv(output_directory / "test_dataset.csv", index=False)
+    train_dataframe.to_csv(output_directory / "train_dataset.csv", index=False)
+
+    return None
