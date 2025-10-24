@@ -73,7 +73,6 @@ def pregunta_01():
     """
     from pathlib import Path
     import pandas as pd
-    import re
     
     frases_sentimiento_test = []
     frases_sentimiento_train = []
